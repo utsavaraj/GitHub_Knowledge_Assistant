@@ -14,33 +14,44 @@ export default function Home() {
   );
 
   const [repoData, setRepoData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
 
   const analyzeRepository = async () => {
-    try {
-      const parts = repoUrl.split("/");
+  try {
+    setLoading(true);
+    setError("");
 
-      const owner = parts[3];
-      const repo = parts[4];
+    const parts = repoUrl.split("/");
 
-      if (!owner || !repo) {
-        alert("Please enter a valid GitHub repository URL");
-        return;
-      }
+    const owner = parts[3];
+    const repo = parts[4];
 
-      const response = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}`
-      );
-
-      const data = await response.json();
-
-      console.log(data);
-
-      setRepoData(data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to fetch repository data");
+    if (!owner || !repo) {
+      setError("Please enter a valid GitHub repository URL");
+      setLoading(false);
+      return;
     }
-  };
+
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Repository not found");
+    }
+
+    const data = await response.json();
+
+    setRepoData(data);
+  } catch (err) {
+    console.error(err);
+    setError("Repository not found");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-[#050816] text-white">
@@ -84,13 +95,20 @@ export default function Home() {
                 />
 
                 <button
-                  onClick={analyzeRepository}
-                  className="rounded-xl bg-linear-to-r from-blue-500 to-cyan-400 px-6 py-3 font-semibold text-slate-950"
-                >
-                  Analyze Repository
+                 
+  onClick={analyzeRepository}
+  className="rounded-xl bg-linear-to-r from-blue-500 to-cyan-400 px-6 py-3 font-semibold text-slate-950"
+>
+  {loading ? "Loading..." : "Analyze Repository"}
+
                 </button>
               </div>
             </div>
+            {error && (
+  <p className="mt-2 text-sm text-red-400">
+    {error}
+  </p>
+)}
 
             <div className="mt-8 flex flex-wrap gap-3 text-sm text-slate-300">
               {featureHighlights.map((item) => (
@@ -124,6 +142,14 @@ export default function Home() {
                         ? repoData.full_name
                         : "Click Analyze Repository"}
                     </h2>
+                    {repoData?.owner?.avatar_url && (
+  <img
+  src={repoData.owner.avatar_url}
+  alt="Owner Avatar"
+  className="mt-4 h-20 w-20 rounded-full border-2 border-blue-500 object-cover"
+/>
+)}
+
                   </div>
 
                   <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
@@ -131,28 +157,38 @@ export default function Home() {
                   </span>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-3">
-                    <p className="text-xs text-slate-400">Stars</p>
-                    <p className="mt-2 text-2xl font-bold text-white">
-                      {repoData ? repoData.stargazers_count : "-"}
-                    </p>
-                  </div>
+     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
 
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-3">
-                    <p className="text-xs text-slate-400">Forks</p>
-                    <p className="mt-2 text-2xl font-bold text-white">
-                      {repoData ? repoData.forks_count : "-"}
-                    </p>
-                  </div>
+  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+    <p className="text-xs text-slate-400">Stars</p>
+    <p className="mt-2 text-xl font-semibold text-white">
+      {repoData ? repoData.stargazers_count : "-"}
+    </p>
+  </div>
 
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-3">
-                    <p className="text-xs text-slate-400">Issues</p>
-                    <p className="mt-2 text-2xl font-bold text-white">
-                      {repoData ? repoData.open_issues_count : "-"}
-                    </p>
-                  </div>
-                </div>
+  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+    <p className="text-xs text-slate-400">Forks</p>
+    <p className="mt-2 text-xl font-semibold text-white">
+      {repoData ? repoData.forks_count : "-"}
+    </p>
+  </div>
+
+  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+    <p className="text-xs text-slate-400">Issues</p>
+    <p className="mt-2 text-xl font-semibold text-white">
+      {repoData ? repoData.open_issues_count : "-"}
+    </p>
+  </div>
+
+  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+    <p className="text-xs text-slate-400">Language</p>
+    <p className="mt-2 text-lg font-semibold text-white break-words">
+      {repoData?.language || "-"}
+    </p>
+  </div>
+
+</div>
+                
 
                 <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-3">
                   <p className="text-xs uppercase tracking-[0.2em] text-blue-200">
