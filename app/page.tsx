@@ -22,6 +22,52 @@ export default function Home() {
   const [readmeLoading, setReadmeLoading] = useState(false);
   const [readmeContent, setReadmeContent] = useState("");
 
+  const featureHighlights = [
+  "AI repo summaries",
+  "README analysis",
+  "PR and architecture context",
+];
+
+export default function Home() {
+  const [repoUrl, setRepoUrl] = useState(
+    "https://github.com/vercel/next.js"
+  );
+
+  const [repoData, setRepoData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSummary, setAiSummary] = useState("");
+
+  const [readmeLoading, setReadmeLoading] = useState(false);
+  const [readmeContent, setReadmeContent] = useState("");
+
+  const [error, setError] = useState("");
+
+  const analyzeRepository = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      setRepoData(null);
+      setAiSummary("");
+      setReadmeContent("");
+
+      const parts = repoUrl.split("/").filter(Boolean);
+      const githubIndex = parts.indexOf("github.com");
+
+      if (githubIndex === -1) {
+        setError("Please enter a valid GitHub repository URL");
+        return;
+      }
+
+      const owner = parts[githubIndex + 1];
+      const repo = parts[githubIndex + 2]?.replace(".git", "");
+
+      if (!owner || !repo) {
+        setError("Please enter a valid GitHub repository URL");
+        return;
+      }
+
   const [error, setError] = useState("");
 
   const analyzeRepository = async () => {
@@ -130,7 +176,7 @@ export default function Home() {
         throw new Error(data.error || "README not found");
       }
 
-      setReadmeContent(data.readme);
+      setReadmeContent(data.explanation);
     } catch (err) {
       console.error(err);
       setError("README could not be fetched");
@@ -138,7 +184,42 @@ export default function Home() {
       setReadmeLoading(false);
     }
   };
+const fetchFolders = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
 
+  try {
+    setFolderLoading(true);
+    setError("");
+    setFolderExplanation("");
+
+    const response = await fetch("/api/folders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        owner: repoData.owner.login,
+        repo: repoData.name,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to analyze folders");
+    }
+
+    setFolderExplanation(data.explanation);
+  } catch (err) {
+    console.error(err);
+    setError("Folder analysis failed");
+  } finally {
+    setFolderLoading(false);
+  }
+};
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-[#050816] text-white">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.18),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_22%)]" />
@@ -352,13 +433,15 @@ export default function Home() {
                           </p>
 
                           <button
-                            onClick={generateAISummary}
-                            disabled={aiLoading}
-                            className="mt-4 rounded-lg bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {aiLoading
-                              ? "Generating AI Summary..."
-                              : "Generate AI Summary"}
+                            <button
+  onClick={fetchFolders}
+  disabled={folderLoading}
+  className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {folderLoading
+    ? "Analyzing Folders..."
+    : "Explain Important Folders"}
+</button>
                           </button>
                         </>
                       )}
