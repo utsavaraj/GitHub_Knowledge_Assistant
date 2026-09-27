@@ -15,34 +15,16 @@ export default function Home() {
 
   const [repoData, setRepoData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiSummary, setAiSummary] = useState("");
-
-  const [readmeLoading, setReadmeLoading] = useState(false);
-  const [readmeContent, setReadmeContent] = useState("");
-
-  const featureHighlights = [
-  "AI repo summaries",
-  "README analysis",
-  "PR and architecture context",
-];
-
-export default function Home() {
-  const [repoUrl, setRepoUrl] = useState(
-    "https://github.com/vercel/next.js"
-  );
-
-  const [repoData, setRepoData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiSummary, setAiSummary] = useState("");
-
-  const [readmeLoading, setReadmeLoading] = useState(false);
-  const [readmeContent, setReadmeContent] = useState("");
-
   const [error, setError] = useState("");
+
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSummary, setAiSummary] = useState("");
+
+  const [readmeLoading, setReadmeLoading] = useState(false);
+  const [readmeContent, setReadmeContent] = useState("");
+
+  const [folderLoading, setFolderLoading] = useState(false);
+  const [folderExplanation, setFolderExplanation] = useState("");
 
   const analyzeRepository = async () => {
     try {
@@ -51,32 +33,7 @@ export default function Home() {
       setRepoData(null);
       setAiSummary("");
       setReadmeContent("");
-
-      const parts = repoUrl.split("/").filter(Boolean);
-      const githubIndex = parts.indexOf("github.com");
-
-      if (githubIndex === -1) {
-        setError("Please enter a valid GitHub repository URL");
-        return;
-      }
-
-      const owner = parts[githubIndex + 1];
-      const repo = parts[githubIndex + 2]?.replace(".git", "");
-
-      if (!owner || !repo) {
-        setError("Please enter a valid GitHub repository URL");
-        return;
-      }
-
-  const [error, setError] = useState("");
-
-  const analyzeRepository = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      setRepoData(null);
-      setAiSummary("");
-      setReadmeContent("");
+      setFolderExplanation("");
 
       const parts = repoUrl.split("/").filter(Boolean);
       const githubIndex = parts.indexOf("github.com");
@@ -384,7 +341,7 @@ const fetchFolders = async () => {
                       Language
                     </p>
 
-                    <p className="mt-2 break-words text-lg font-semibold text-white">
+                    <p className="mt-2 wrap-break-word text-lg font-semibold text-white">
                       {repoData?.language || "-"}
                     </p>
                   </div>
@@ -433,15 +390,13 @@ const fetchFolders = async () => {
                           </p>
 
                           <button
-                            <button
-  onClick={fetchFolders}
-  disabled={folderLoading}
-  className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {folderLoading
-    ? "Analyzing Folders..."
-    : "Explain Important Folders"}
-</button>
+                            onClick={fetchFolders}
+                            disabled={folderLoading}
+                            className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {folderLoading
+                              ? "Analyzing Folders..."
+                              : "Explain Important Folders"}
                           </button>
                         </>
                       )}

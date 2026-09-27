@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     const folders = contents
       .filter((item: any) => item.type === "dir")
       .map((item: any) => item.name);
+      console.log("Folders:", folders);
 
     const completion = await groq.chat.completions.create({
       messages: [
