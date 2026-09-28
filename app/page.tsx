@@ -25,7 +25,10 @@ export default function Home() {
 
   const [folderLoading, setFolderLoading] = useState(false);
   const [folderExplanation, setFolderExplanation] = useState("");
-
+  
+  const [question, setQuestion] = useState("");
+  const [chatAnswer, setChatAnswer] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
   const analyzeRepository = async () => {
     try {
       setLoading(true);
@@ -141,7 +144,7 @@ export default function Home() {
       setReadmeLoading(false);
     }
   };
-const fetchFolders = async () => {
+    const fetchFolders = async () => {
   if (!repoData) {
     setError("Please analyze a repository first");
     return;
@@ -175,6 +178,38 @@ const fetchFolders = async () => {
     setError("Folder analysis failed");
   } finally {
     setFolderLoading(false);
+  }
+};
+const askQuestion = async () => {
+  if (!repoData || !question.trim()) return;
+
+  try {
+    setChatLoading(true);
+    setError("");
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+        question,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    setChatAnswer(data.answer);
+  } catch (error) {
+    console.error(error);
+    setError("Failed to get answer");
+  } finally {
+    setChatLoading(false);
   }
 };
   return (
@@ -463,6 +498,37 @@ const fetchFolders = async () => {
     {folderExplanation}
   </div>
 )}
+<div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+  <div className="flex items-center gap-2">
+    <span className="text-lg">💬</span>
+
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
+      Chat With Repository
+    </p>
+  </div>
+
+  <input
+    type="text"
+    value={question}
+    onChange={(e) => setQuestion(e.target.value)}
+    placeholder="Ask anything about this repository..."
+    className="mt-4 w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
+  />
+
+  <button
+    onClick={askQuestion}
+    disabled={chatLoading}
+    className="mt-3 rounded-lg bg-linear-to-r from-green-400 to-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
+  >
+    {chatLoading ? "Thinking..." : "Ask AI"}
+  </button>
+
+  {chatAnswer && (
+    <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+      {chatAnswer}
+    </div>
+  )}
+</div>
 
                     </div>
                   </>
