@@ -390,14 +390,14 @@ const fetchFolders = async () => {
                           </p>
 
                           <button
-                            onClick={fetchFolders}
-                            disabled={folderLoading}
-                            className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {folderLoading
-                              ? "Analyzing Folders..."
-                              : "Explain Important Folders"}
-                          </button>
+  onClick={generateAISummary}
+  disabled={aiLoading}
+  className="mt-4 rounded-lg bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {aiLoading
+    ? "Generating AI Summary..."
+    : "Generate AI Summary"}
+</button>
                         </>
                       )}
 
@@ -440,6 +440,16 @@ const fetchFolders = async () => {
                               ? "Loading README..."
                               : "Analyze README"}
                           </button>
+                          <button
+  onClick={fetchFolders}
+  disabled={folderLoading}
+  className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {folderLoading
+    ? "Analyzing Folders..."
+    : "Explain Important Folders"}
+</button>
+
                         </>
                       )}
 
@@ -448,6 +458,11 @@ const fetchFolders = async () => {
                           {readmeContent}
                         </div>
                       )}
+                      {folderExplanation && (
+  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+    {folderExplanation}
+  </div>
+)}
 
                     </div>
                   </>

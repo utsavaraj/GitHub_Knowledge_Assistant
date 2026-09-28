@@ -5,7 +5,11 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+console.log("GROQ KEY EXISTS:", !!process.env.GROQ_API_KEY);
+
 export async function POST(request: Request) {
+  console.log("🔥 Folders API Hit");
+
   try {
     const { owner, repo } = await request.json();
 
@@ -29,12 +33,17 @@ export async function POST(request: Request) {
 
     const contents = await response.json();
 
-    const folders = contents
-      .filter((item: any) => item.type === "dir")
-      .map((item: any) => item.name);
-      console.log("Folders:", folders);
+    const folders = Array.isArray(contents)
+      ? contents
+          .filter((item: any) => item.type === "dir")
+          .map((item: any) => item.name)
+      : [];
+
+    console.log("Folders:", folders);
 
     const completion = await groq.chat.completions.create({
+      model: "openai/gpt-oss-20b",
+      temperature: 0.5,
       messages: [
         {
           role: "user",
@@ -51,13 +60,10 @@ For each folder explain:
 `,
         },
       ],
-      model: "openai/gpt-oss-20b",
-      temperature: 0.5,
     });
 
     const explanation =
-      completion.choices[0]?.message?.content ||
-      "Unable to explain folders.";
+      completion.choices[0]?.message?.content || "Unable to explain folders.";
 
     return NextResponse.json({
       folders,
