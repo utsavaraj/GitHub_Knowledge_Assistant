@@ -29,6 +29,9 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [chatAnswer, setChatAnswer] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
+
+  const [techLoading, setTechLoading] = useState(false);
+  const [techStack, setTechStack] = useState("");
   const analyzeRepository = async () => {
     try {
       setLoading(true);
@@ -145,6 +148,41 @@ export default function Home() {
     }
   };
     const fetchFolders = async () => {
+      const fetchTechStack = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
+
+  try {
+    setTechLoading(true);
+    setError("");
+    setTechStack("");
+
+    const response = await fetch("/api/techstack", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to analyze tech stack");
+    }
+
+    setTechStack(data.analysis);
+  } catch (err) {
+    console.error(err);
+    setError("Tech stack analysis failed");
+  } finally {
+    setTechLoading(false);
+  }
+};
   if (!repoData) {
     setError("Please analyze a repository first");
     return;
@@ -210,6 +248,42 @@ const askQuestion = async () => {
     setError("Failed to get answer");
   } finally {
     setChatLoading(false);
+  }
+};
+
+const fetchTechStack = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
+
+  try {
+    setTechLoading(true);
+    setError("");
+    setTechStack("");
+
+    const response = await fetch("/api/techstack", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to analyze tech stack");
+    }
+
+    setTechStack(data.analysis);
+  } catch (err) {
+    console.error(err);
+    setError("Tech stack analysis failed");
+  } finally {
+    setTechLoading(false);
   }
 };
   return (
@@ -466,25 +540,37 @@ const askQuestion = async () => {
                             documentation.
                           </p>
 
-                          <button
-                            onClick={fetchReadme}
-                            disabled={readmeLoading}
-                            className="mt-4 rounded-lg bg-linear-to-r from-purple-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {readmeLoading
-                              ? "Loading README..."
-                              : "Analyze README"}
-                          </button>
-                          <button
-  onClick={fetchFolders}
-  disabled={folderLoading}
-  className="mt-3 rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {folderLoading
-    ? "Analyzing Folders..."
-    : "Explain Important Folders"}
-</button>
+                          <div className="mt-4 flex flex-col items-start gap-3">
+                            <button
+                              onClick={fetchReadme}
+                              disabled={readmeLoading}
+                              className="rounded-lg bg-linear-to-r from-purple-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {readmeLoading
+                                ? "Loading README..."
+                                : "Analyze README"}
+                            </button>
 
+                            <button
+                              onClick={fetchFolders}
+                              disabled={folderLoading}
+                              className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {folderLoading
+                                ? "Analyzing Folders..."
+                                : "Explain Important Folders"}
+                            </button>
+
+                            <button
+                              onClick={fetchTechStack}
+                              disabled={techLoading}
+                              className="rounded-lg bg-linear-to-r from-orange-400 to-yellow-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {techLoading
+                                ? "Analyzing Tech Stack..."
+                                : "Analyze Tech Stack"}
+                            </button>
+                          </div>
                         </>
                       )}
 
@@ -493,19 +579,27 @@ const askQuestion = async () => {
                           {readmeContent}
                         </div>
                       )}
-                      {folderExplanation && (
-  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-    {folderExplanation}
-  </div>
-)}
-<div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-  <div className="flex items-center gap-2">
-    <span className="text-lg">💬</span>
 
-    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
-      Chat With Repository
-    </p>
-  </div>
+                      {folderExplanation && (
+                        <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+                          {folderExplanation}
+                        </div>
+                      )}
+
+                      {techStack && (
+                        <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+                          {techStack}
+                        </div>
+                      )}
+
+                      <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">💬</span>
+
+                          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
+                            Chat With Repository
+                          </p>
+                        </div>
 
   <input
     type="text"
