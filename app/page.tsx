@@ -540,7 +540,7 @@ const fetchTechStack = async () => {
                             documentation.
                           </p>
 
-                          <div className="mt-4 flex flex-col items-start gap-3">
+                         <div className="mt-4 flex flex-wrap gap-3">
                             <button
                               onClick={fetchReadme}
                               disabled={readmeLoading}
@@ -550,16 +550,19 @@ const fetchTechStack = async () => {
                                 ? "Loading README..."
                                 : "Analyze README"}
                             </button>
+                              
 
-                            <button
-                              onClick={fetchFolders}
-                              disabled={folderLoading}
-                              className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              {folderLoading
-                                ? "Analyzing Folders..."
-                                : "Explain Important Folders"}
-                            </button>
+<button
+  onClick={fetchFolders}
+  disabled={folderLoading}
+  className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {folderLoading
+    ? "Analyzing Folders..."
+    : "Explain Important Folders"}
+</button>
+
+                       
 
                             <button
                               onClick={fetchTechStack}
