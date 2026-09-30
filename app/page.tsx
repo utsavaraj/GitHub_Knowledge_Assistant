@@ -32,6 +32,9 @@ export default function Home() {
 
   const [techLoading, setTechLoading] = useState(false);
   const [techStack, setTechStack] = useState("");
+
+  const [contributors, setContributors] = useState("");
+  const [contributorsLoading, setContributorsLoading] = useState(false);
   const analyzeRepository = async () => {
     try {
       setLoading(true);
@@ -147,109 +150,8 @@ export default function Home() {
       setReadmeLoading(false);
     }
   };
-    const fetchFolders = async () => {
-      const fetchTechStack = async () => {
-  if (!repoData) {
-    setError("Please analyze a repository first");
-    return;
-  }
-
-  try {
-    setTechLoading(true);
-    setError("");
-    setTechStack("");
-
-    const response = await fetch("/api/techstack", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        repository: repoData,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to analyze tech stack");
-    }
-
-    setTechStack(data.analysis);
-  } catch (err) {
-    console.error(err);
-    setError("Tech stack analysis failed");
-  } finally {
-    setTechLoading(false);
-  }
-};
-  if (!repoData) {
-    setError("Please analyze a repository first");
-    return;
-  }
-
-  try {
-    setFolderLoading(true);
-    setError("");
-    setFolderExplanation("");
-
-    const response = await fetch("/api/folders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        owner: repoData.owner.login,
-        repo: repoData.name,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to analyze folders");
-    }
-
-    setFolderExplanation(data.explanation);
-  } catch (err) {
-    console.error(err);
-    setError("Folder analysis failed");
-  } finally {
-    setFolderLoading(false);
-  }
-};
-const askQuestion = async () => {
-  if (!repoData || !question.trim()) return;
-
-  try {
-    setChatLoading(true);
-    setError("");
-
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        repository: repoData,
-        question,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error);
-    }
-
-    setChatAnswer(data.answer);
-  } catch (error) {
-    console.error(error);
-    setError("Failed to get answer");
-  } finally {
-    setChatLoading(false);
-  }
-};
+    
+      
 
 const fetchTechStack = async () => {
   if (!repoData) {
@@ -286,6 +188,118 @@ const fetchTechStack = async () => {
     setTechLoading(false);
   }
 };
+
+const fetchContributors = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
+
+  try {
+    setContributorsLoading(true);
+    setError("");
+    setContributors("");
+
+    const response = await fetch("/api/contributors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        owner: repoData.owner.login,
+        repo: repoData.name,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to analyze contributors");
+    }
+
+    setContributors(data.contributors);
+  } catch (err) {
+    console.error(err);
+    setError("Contributors analysis failed");
+  } finally {
+    setContributorsLoading(false);
+  }
+};
+
+const fetchFolders = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
+
+  try {
+    setFolderLoading(true);
+    setError("");
+    setFolderExplanation("");
+
+    const response = await fetch("/api/folders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        owner: repoData.owner.login,
+        repo: repoData.name,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to explain folders");
+    }
+
+    setFolderExplanation(data.explanation);
+  } catch (err) {
+    console.error(err);
+    setError("Folder analysis failed");
+  } finally {
+    setFolderLoading(false);
+  }
+};
+
+const askQuestion = async () => {
+  if (!repoData || !question.trim()) {
+    setError("Please enter a question about the repository");
+    return;
+  }
+
+  try {
+    setChatLoading(true);
+    setError("");
+    setChatAnswer("");
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+        question: question.trim(),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to get answer");
+    }
+
+    setChatAnswer(data.answer);
+  } catch (err) {
+    console.error(err);
+    setError("Failed to answer the question");
+  } finally {
+    setChatLoading(false);
+  }
+};
+
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-[#050816] text-white">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.18),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_22%)]" />
@@ -573,6 +587,15 @@ const fetchTechStack = async () => {
                                 ? "Analyzing Tech Stack..."
                                 : "Analyze Tech Stack"}
                             </button>
+                            <button
+  onClick={fetchContributors}
+  disabled={contributorsLoading}
+  className="rounded-lg bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {contributorsLoading
+    ? "Analyzing Contributors..."
+    : "Analyze Contributors"}
+</button>
                           </div>
                         </>
                       )}
@@ -594,6 +617,11 @@ const fetchTechStack = async () => {
                           {techStack}
                         </div>
                       )}
+                      {contributors && (
+  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+    {contributors}
+  </div>
+)}
 
                       <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
                         <div className="flex items-center gap-2">
