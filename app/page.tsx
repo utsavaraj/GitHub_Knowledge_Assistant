@@ -467,7 +467,26 @@ const askQuestion = async () => {
                     <p className="mt-2 wrap-break-word text-lg font-semibold text-white">
                       {repoData?.language || "-"}
                     </p>
+                   
                   </div>
+                  <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
+  <p className="text-xs text-green-300">
+    Health Score
+  </p>
+
+  <p className="mt-2 text-xl font-semibold text-white">
+    {repoData
+      ? Math.min(
+          10,
+          repoData.stargazers_count / 1000 +
+            repoData.forks_count / 500 +
+            5 -
+            repoData.open_issues_count / 1000
+        ).toFixed(1)
+      : "-"}
+    /10
+  </p>
+</div>
 
                 </div>
 
