@@ -30,11 +30,30 @@ Open Issues: ${repository.open_issues_count}
 
 Give the response in these sections:
 
-1. What this project is
-2. Main purpose
-3. Technologies used
-4. Why developers might use it
-5. Beginner-friendly explanation
+📦 Repository Overview
+- Explain what the project is
+- Mention the main purpose
+
+🚀 Key Features
+- List the main features in bullet points
+
+🛠 Tech Stack
+- Mention technologies, frameworks and languages used
+
+👥 Who Should Use It
+- Mention which type of developers or users would benefit from it
+
+📚 What You Can Learn
+- Mention skills or concepts someone can learn from this repository
+
+📝 Beginner Summary
+- Give a short and simple explanation in 3-5 lines
+
+Rules:
+- Use simple English
+- Use bullet points wherever possible
+- Avoid long paragraphs
+- Keep the response well-structured and easy to read
 
 Keep the explanation clear and concise.
 `;
@@ -46,7 +65,7 @@ Keep the explanation clear and concise.
           content: prompt,
         },
       ],
-     model: "openai/gpt-oss-20b",
+      model: "openai/gpt-oss-20b",
       temperature: 0.5,
     });
 
@@ -59,7 +78,9 @@ Keep the explanation clear and concise.
     console.error("AI Summary Error:", error);
 
     return NextResponse.json(
-      { error: "Failed to generate AI summary" },
+      {
+        error: String(error),
+      },
       { status: 500 }
     );
   }
