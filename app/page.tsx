@@ -33,6 +33,9 @@ export default function Home() {
   const [techLoading, setTechLoading] = useState(false);
   const [techStack, setTechStack] = useState("");
 
+  const [similarRepos, setSimilarRepos] = useState("");
+  const [similarLoading, setSimilarLoading] = useState(false);
+
   const [contributors, setContributors] = useState("");
   const [contributorsLoading, setContributorsLoading] = useState(false);
   const analyzeRepository = async () => {
@@ -223,6 +226,43 @@ const fetchContributors = async () => {
     setError("Contributors analysis failed");
   } finally {
     setContributorsLoading(false);
+  }
+};
+const fetchSimilarRepos = async () => {
+  if (!repoData) {
+    setError("Please analyze a repository first");
+    return;
+  }
+
+  try {
+    setSimilarLoading(true);
+    setError("");
+    setSimilarRepos("");
+
+    const response = await fetch("/api/similar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Failed to fetch similar repositories"
+      );
+    }
+
+    setSimilarRepos(data.suggestions);
+  } catch (err) {
+    console.error(err);
+    setError("Similar repositories analysis failed");
+  } finally {
+    setSimilarLoading(false);
   }
 };
 
@@ -615,6 +655,15 @@ const askQuestion = async () => {
     ? "Analyzing Contributors..."
     : "Analyze Contributors"}
 </button>
+<button
+  onClick={fetchSimilarRepos}
+  disabled={similarLoading}
+  className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {similarLoading
+    ? "Finding Similar Repositories..."
+    : "Similar Repositories"}
+</button>
                           </div>
                         </>
                       )}
@@ -639,6 +688,11 @@ const askQuestion = async () => {
                       {contributors && (
   <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
     {contributors}
+  </div>
+)}
+{similarRepos && (
+  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+    {similarRepos}
   </div>
 )}
 
