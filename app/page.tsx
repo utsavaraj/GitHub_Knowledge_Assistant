@@ -399,6 +399,16 @@ const askQuestion = async () => {
 
               </div>
             </div>
+            {repoData && (
+  <div className="mt-4">
+    <a
+      href="/analysis"
+      className="inline-flex rounded-xl bg-linear-to-r from-purple-500 to-pink-500 px-6 py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      View Detailed Analysis →
+    </a>
+  </div>
+)}
 
             {/* Error */}
             {error && (
