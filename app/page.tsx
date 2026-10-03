@@ -74,6 +74,11 @@ export default function Home() {
       const data = await response.json();
 
       setRepoData(data);
+      localStorage.setItem(
+  "selectedRepo",
+  JSON.stringify(data)
+);
+
     } catch (err) {
       console.error(err);
       setError("Repository not found or invalid GitHub URL");
