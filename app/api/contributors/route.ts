@@ -2,17 +2,19 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { owner, repo } = await request.json();
+    const { repository } = await request.json();
 
-    if (!owner || !repo) {
-      return NextResponse.json(
-        { error: "Owner and repo are required" },
+    if (!repository) {
+  return NextResponse.json(
+    { error: "Repository data is required" },
         { status: 400 }
       );
     }
 
+    
+
     const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contributors`
+      `https://api.github.com/repos/${repository.owner.login}/${repository.name}/contributors`
     );
 
     if (!response.ok) {
@@ -29,9 +31,9 @@ export async function POST(request: Request) {
       )
       .join("\n");
 
-    return NextResponse.json({
-      contributors: topContributors,
-    });
+   return NextResponse.json({
+  explanation: topContributors,
+});
   } catch (error) {
     console.error("Contributors Error:", error);
 
