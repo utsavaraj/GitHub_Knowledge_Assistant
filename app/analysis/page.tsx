@@ -20,6 +20,9 @@ export default function AnalysisPage() {
   const [contributorsLoading, setContributorsLoading] = useState(false);
   const [contributors, setContributors] = useState("");
 
+  const [similarReposLoading, setSimilarReposLoading] = useState(false);
+  const [similarRepos, setSimilarRepos] = useState("");
+
   useEffect(() => {
     const savedRepo = localStorage.getItem("selectedRepo");
 
@@ -121,6 +124,38 @@ export default function AnalysisPage() {
     console.error(error);
   } finally {
     setContributorsLoading(false);
+  }
+};
+
+const fetchSimilarRepos = async () => {
+  console.log("Similar repositories card clicked");
+
+  if (!repoData) return;
+
+  try {
+    setSimilarReposLoading(true);
+
+    const response = await fetch("/api/similar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        repository: repoData,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    setSimilarRepos(data.explanation);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setSimilarReposLoading(false);
   }
 };
 
@@ -339,14 +374,34 @@ export default function AnalysisPage() {
             </div>
           )}
 
-          <div className="rounded-2xl border border-green-500/20 bg-slate-900 p-5">
-            <h2 className="font-semibold text-green-300">
-              🔗 Similar Repositories
-            </h2>
-            <p className="mt-2 text-sm text-slate-400">
-              Find related repositories and alternatives.
-            </p>
-          </div>
+          <div
+  onClick={fetchSimilarRepos}
+  className="cursor-pointer rounded-2xl border border-green-500/20 bg-slate-900 p-5 transition hover:border-green-400 hover:bg-slate-800"
+>
+  <h2 className="font-semibold text-green-300">
+    🔗 Similar Repositories
+  </h2>
+
+  <p className="mt-2 text-sm text-slate-400">
+    Find related repositories and alternatives.
+  </p>
+
+  <p className="mt-3 text-xs text-green-400">
+    Click to find similar repositories
+  </p>
+</div>
+
+{similarRepos && (
+  <div className="rounded-2xl border border-green-500/20 bg-slate-900 p-5 md:col-span-2">
+    <h3 className="mb-3 font-semibold text-green-300">
+      Similar Repositories Result
+    </h3>
+
+    <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
+      {similarRepos}
+    </div>
+  </div>
+)}
         </div>
       </div>
     </main>

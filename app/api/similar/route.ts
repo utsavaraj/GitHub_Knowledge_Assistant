@@ -46,15 +46,14 @@ Keep the response beginner friendly.
 
     const result = completion.choices[0]?.message?.content;
 
-    return NextResponse.json({
-      suggestions: result || "No similar repositories found.",
-    });
+   return NextResponse.json({
+  explanation: result || "No similar repositories found.",
+});
   } catch (error) {
     console.error("Similar Repo Error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch similar repositories" },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      error: "Failed to fetch similar repositories.",
+    }, { status: 500 });
   }
 }
