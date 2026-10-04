@@ -14,6 +14,9 @@ export default function AnalysisPage() {
   const [readmeLoading, setReadmeLoading] = useState(false);
   const [readmeContent, setReadmeContent] = useState("");
 
+  const [techLoading, setTechLoading] = useState(false);
+  const [techStack, setTechStack] = useState("");
+
   useEffect(() => {
     const savedRepo = localStorage.getItem("selectedRepo");
 
@@ -54,6 +57,39 @@ export default function AnalysisPage() {
       setFolderLoading(false);
     }
   };
+
+  const fetchTechStack = async () => {
+    console.log("Tech stack card clicked");
+
+    if (!repoData) return;
+
+    try {
+      setTechLoading(true);
+
+      const response = await fetch("/api/techstack", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+  repository: repoData,
+}),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      setTechStack(data.explanation);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setTechLoading(false);
+    }
+  };
+
   const fetchReadme = async () => {
     console.log("README card clicked");
   if (!repoData) return;
@@ -213,14 +249,33 @@ export default function AnalysisPage() {
             </div>
           )}
 
-          <div className="rounded-2xl border border-orange-500/20 bg-slate-900 p-5">
-            <h2 className="font-semibold text-orange-300">
-              🛠 Tech Stack Analysis
-            </h2>
-            <p className="mt-2 text-sm text-slate-400">
-              Discover technologies used in the repository.
-            </p>
-          </div>
+          <div
+  onClick={fetchTechStack}
+  className="cursor-pointer rounded-2xl border border-orange-500/20 bg-slate-900 p-5 transition hover:border-orange-400 hover:bg-slate-800"
+>
+  <h2 className="font-semibold text-orange-300">
+    🛠 Tech Stack Analysis
+  </h2>
+
+  <p className="mt-2 text-sm text-slate-400">
+    Discover technologies used in the repository.
+  </p>
+
+  <p className="mt-3 text-xs text-orange-400">
+    Click to analyze tech stack
+  </p>
+</div>
+{techStack && (
+  <div className="rounded-2xl border border-orange-500/20 bg-slate-900 p-5 md:col-span-2">
+    <h3 className="mb-3 font-semibold text-orange-300">
+      Tech Stack Analysis Result
+    </h3>
+
+    <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
+      {techStack}
+    </div>
+  </div>
+)}
 
           <div className="rounded-2xl border border-cyan-500/20 bg-slate-900 p-5">
             <h2 className="font-semibold text-cyan-300">

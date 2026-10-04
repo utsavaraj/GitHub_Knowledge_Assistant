@@ -49,8 +49,8 @@ Analyze this repository and identify:
       "Unable to analyze tech stack.";
 
     return NextResponse.json({
-      analysis,
-    });
+  explanation: analysis,
+});
   } catch (error) {
     console.error("Tech Stack Error:", error);
 
