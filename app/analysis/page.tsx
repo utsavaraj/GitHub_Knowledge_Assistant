@@ -1,4 +1,6 @@
+
 "use client";
+import ReactMarkdown from "react-markdown";
 
 import { useEffect, useState } from "react";
 
@@ -7,6 +9,8 @@ export default function AnalysisPage() {
 
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSummary, setAiSummary] = useState("");
+
+  const [activeResult, setActiveResult] = useState("");
 
   const [folderLoading, setFolderLoading] = useState(false);
   const [folderExplanation, setFolderExplanation] = useState("");
@@ -57,6 +61,8 @@ export default function AnalysisPage() {
       }
 
       setFolderExplanation(data.explanation);
+
+      setActiveResult(data.explanation);
     } catch (error) {
       console.error(error);
     } finally {
@@ -83,12 +89,15 @@ export default function AnalysisPage() {
       });
 
       const data = await response.json();
+      console.log("TechStack API Response:", data);
 
       if (!response.ok) {
         throw new Error(data.error);
       }
 
       setTechStack(data.explanation);
+
+      setActiveResult(data.explanation);
     } catch (error) {
       console.error(error);
     } finally {
@@ -120,6 +129,8 @@ export default function AnalysisPage() {
     }
 
     setContributors(data.explanation);
+
+    setActiveResult(data.explanation);
   } catch (error) {
     console.error(error);
   } finally {
@@ -135,23 +146,28 @@ const fetchSimilarRepos = async () => {
   try {
     setSimilarReposLoading(true);
 
-    const response = await fetch("/api/similar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        repository: repoData,
-      }),
-    });
+   const response = await fetch("/api/similar", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    repository: repoData,
+  }),
+});
 
-    const data = await response.json();
+console.log("Calling Similar API...");
 
-    if (!response.ok) {
-      throw new Error(data.error);
-    }
+const data = await response.json();
+console.log("Similar API Response:", data);
 
-    setSimilarRepos(data.explanation);
+if (!response.ok) {
+  throw new Error(data.error);
+}
+
+setSimilarRepos(data.explanation);
+
+setActiveResult(data.explanation);
   } catch (error) {
     console.error(error);
   } finally {
@@ -185,6 +201,8 @@ const fetchSimilarRepos = async () => {
     }
 
     setReadmeContent(data.explanation);
+
+    setActiveResult(data.explanation);
   } catch (error) {
     console.error(error);
   } finally {
@@ -215,6 +233,8 @@ const fetchSimilarRepos = async () => {
       }
 
       setAiSummary(data.summary);
+
+      setActiveResult(data.summary);
     } catch (error) {
       console.error(error);
     } finally {
@@ -222,7 +242,10 @@ const fetchSimilarRepos = async () => {
     }
   };
   return (
-    <main className="min-h-screen bg-[#050816] text-white">
+    <>
+     
+
+      <main className="min-h-screen bg-[#050816] text-white">
       <div className="mx-auto max-w-7xl px-6 py-10">
         <h1 className="text-4xl font-bold">
           {repoData?.full_name || "Repository Detailed Analysis"}
@@ -248,17 +271,8 @@ const fetchSimilarRepos = async () => {
             </p>
           </div>
 
-          {aiSummary && (
-            <div className="rounded-2xl border border-purple-500/20 bg-slate-900 p-5 md:col-span-2">
-              <h3 className="mb-3 font-semibold text-purple-300">
-                AI Summary Result
-              </h3>
-
-              <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-                {aiSummary}
-              </div>
-            </div>
-          )}
+          
+          
 
           <div
   onClick={fetchReadme}
@@ -276,17 +290,9 @@ const fetchSimilarRepos = async () => {
     Click to analyze README
   </p>
 </div>
-        {readmeContent && (
-  <div className="rounded-2xl border border-blue-500/20 bg-slate-900 p-5 md:col-span-2">
-    <h3 className="mb-3 font-semibold text-blue-300">
-      README Analysis Result
-    </h3>
+        
+  
 
-    <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-      {readmeContent}
-    </div>
-  </div>
-)}
 <div
   onClick={fetchFolders}
   className="cursor-pointer rounded-2xl border border-pink-500/20 bg-slate-900 p-5 transition hover:border-pink-400 hover:bg-slate-800"
@@ -306,17 +312,8 @@ const fetchSimilarRepos = async () => {
 
 
 
-          {folderExplanation && (
-            <div className="rounded-2xl border border-pink-500/20 bg-slate-900 p-5 md:col-span-2">
-              <h3 className="mb-3 font-semibold text-pink-300">
-                Folder Analysis Result
-              </h3>
-
-              <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-                {folderExplanation}
-              </div>
-            </div>
-          )}
+          
+          
 
           <div
   onClick={fetchTechStack}
@@ -334,17 +331,9 @@ const fetchSimilarRepos = async () => {
     Click to analyze tech stack
   </p>
 </div>
-{techStack && (
-  <div className="rounded-2xl border border-orange-500/20 bg-slate-900 p-5 md:col-span-2">
-    <h3 className="mb-3 font-semibold text-orange-300">
-      Tech Stack Analysis Result
-    </h3>
 
-    <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-      {techStack}
-    </div>
-  </div>
-)}
+ 
+
 <div
   onClick={fetchContributors}
   className="cursor-pointer rounded-2xl border border-cyan-500/20 bg-slate-900 p-5 transition hover:border-cyan-400 hover:bg-slate-800"
@@ -362,19 +351,11 @@ const fetchSimilarRepos = async () => {
   </p>
 </div>
 
-          {contributors && (
-            <div className="rounded-2xl border border-cyan-500/20 bg-slate-900 p-5 md:col-span-2">
-              <h3 className="mb-3 font-semibold text-cyan-300">
-                Contributors Analysis Result
-              </h3>
+          
+            
+          
 
-              <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-                {contributors}
-              </div>
-            </div>
-          )}
-
-          <div
+      <div
   onClick={fetchSimilarRepos}
   className="cursor-pointer rounded-2xl border border-green-500/20 bg-slate-900 p-5 transition hover:border-green-400 hover:bg-slate-800"
 >
@@ -390,20 +371,25 @@ const fetchSimilarRepos = async () => {
     Click to find similar repositories
   </p>
 </div>
+   <div className="md:col-span-2 mt-4 rounded-2xl border border-slate-700 bg-slate-900 p-6">
+  <h2 className="mb-4 text-xl font-bold text-white">
+    Analysis Result
+  </h2>
 
-{similarRepos && (
-  <div className="rounded-2xl border border-green-500/20 bg-slate-900 p-5 md:col-span-2">
-    <h3 className="mb-3 font-semibold text-green-300">
-      Similar Repositories Result
-    </h3>
-
-    <div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
-      {similarRepos}
-    </div>
+  <div className="prose prose-invert max-w-none">
+    <div className="prose prose-invert max-w-none text-slate-300">
+  <ReactMarkdown>
+   {activeResult || "Click any analysis card to see results."}
+  </ReactMarkdown>
+</div>
   </div>
-)}
+</div>
+
+  
+
         </div>
       </div>
     </main>
+    </>
   );
 }
