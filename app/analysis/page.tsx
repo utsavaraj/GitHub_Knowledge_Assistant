@@ -27,6 +27,9 @@ export default function AnalysisPage() {
   const [similarReposLoading, setSimilarReposLoading] = useState(false);
   const [similarRepos, setSimilarRepos] = useState("");
 
+  const [question, setQuestion] = useState("");
+  const [chatAnswer, setChatAnswer] = useState("");
+
   useEffect(() => {
     const savedRepo = localStorage.getItem("selectedRepo");
 
@@ -241,6 +244,36 @@ setActiveResult(data.explanation);
       setAiLoading(false);
     }
   };
+
+  const askQuestion = async () => {
+    if (!repoData || !question.trim()) return;
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          repository: repoData,
+          question: question.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to get answer");
+      }
+
+      setChatAnswer(data.answer || data.explanation || "No answer returned.");
+      setQuestion("");
+    } catch (error) {
+      console.error(error);
+      setChatAnswer("Sorry, I couldn't answer that question right now.");
+    }
+  };
+
   return (
     <>
      
@@ -382,13 +415,33 @@ setActiveResult(data.explanation);
    {activeResult || "Click any analysis card to see results."}
   </ReactMarkdown>
 </div>
+
+
+  <input
+    type="text"
+    value={question}
+    onChange={(e) => setQuestion(e.target.value)}
+    placeholder="Ask anything about this repository..."
+  />
+
+  <button
+    onClick={askQuestion}
+  >
+    Ask AI
+  </button>
+
+  {chatAnswer && (
+    <div>
+      {chatAnswer}
+    </div>
+  )}
+</div>
   </div>
 </div>
 
   
 
         </div>
-      </div>
     </main>
     </>
   );

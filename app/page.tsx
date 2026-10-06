@@ -438,7 +438,6 @@ const askQuestion = async () => {
 
           {/* Right Side */}
           <div className="relative">
-
             <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-slate-900/80 p-5">
 
               {/* Browser Dots */}
@@ -452,9 +451,7 @@ const askQuestion = async () => {
 
                 {/* Repository Header */}
                 <div className="mb-4 flex items-start justify-between gap-3">
-
                   <div>
-
                     <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
                       Repository
                     </p>
@@ -472,281 +469,105 @@ const askQuestion = async () => {
                         className="mt-4 h-20 w-20 rounded-full border-2 border-blue-500 object-cover"
                       />
                     )}
-
                   </div>
 
                   <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
                     Active
                   </span>
-
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-
                   <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">
-                      Stars
-                    </p>
-
+                    <p className="text-xs text-slate-400">Stars</p>
                     <p className="mt-2 text-xl font-semibold text-white">
                       {repoData ? repoData.stargazers_count : "-"}
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">
-                      Forks
-                    </p>
-
+                    <p className="text-xs text-slate-400">Forks</p>
                     <p className="mt-2 text-xl font-semibold text-white">
                       {repoData ? repoData.forks_count : "-"}
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">
-                      Issues
-                    </p>
-
+                    <p className="text-xs text-slate-400">Issues</p>
                     <p className="mt-2 text-xl font-semibold text-white">
                       {repoData ? repoData.open_issues_count : "-"}
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">
-                      Language
-                    </p>
-
+                    <p className="text-xs text-slate-400">Language</p>
                     <p className="mt-2 wrap-break-word text-lg font-semibold text-white">
                       {repoData?.language || "-"}
                     </p>
-                   
                   </div>
+
                   <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
-  <p className="text-xs text-green-300">
-    Health Score
-  </p>
-
-  <p className="mt-2 text-xl font-semibold text-white">
-    {repoData
-      ? Math.min(
-          10,
-          repoData.stargazers_count / 1000 +
-            repoData.forks_count / 500 +
-            5 -
-            repoData.open_issues_count / 1000
-        ).toFixed(1)
-      : "-"}
-    /10
-  </p>
-</div>
-
+                    <p className="text-xs text-green-300">Health Score</p>
+                    <p className="mt-2 text-xl font-semibold text-white">
+                      {repoData
+                        ? Math.min(
+                            10,
+                            repoData.stargazers_count / 1000 +
+                              repoData.forks_count / 500 +
+                              5 -
+                              repoData.open_issues_count / 1000
+                          ).toFixed(1)
+                        : "-"}
+                      /10
+                    </p>
+                  </div>
                 </div>
 
                 {/* Description */}
                 <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-3">
-
                   <p className="text-xs uppercase tracking-[0.2em] text-blue-200">
                     Repository Description
                   </p>
 
                   <p className="mt-2 text-sm leading-6 text-slate-200">
                     {repoData
-                      ? repoData.description ||
-                        "No repository description available."
+                      ? repoData.description || "No repository description available."
                       : "Enter a GitHub repository URL and click Analyze Repository"}
                   </p>
-
                 </div>
 
-                {/* AI Summary */}
-                {repoData && (
-                  <>
-                    <div className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
+                {/* Chat With Repository */}
+                <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">💬</span>
 
-                      <div className="flex items-center gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
+                      Chat With Repository
+                    </p>
+                  </div>
 
-                        <span className="text-lg">
-                          🤖
-                        </span>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Ask anything about this repository..."
+                    className="mt-4 w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
+                  />
 
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200">
-                          AI Repository Summary
-                        </p>
+                  <button
+                    onClick={askQuestion}
+                    disabled={chatLoading}
+                    className="mt-3 rounded-lg bg-linear-to-r from-green-400 to-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
+                  >
+                    {chatLoading ? "Thinking..." : "Ask AI"}
+                  </button>
 
-                      </div>
-
-                      {!aiSummary && (
-                        <>
-                          <p className="mt-3 text-sm leading-6 text-slate-300">
-                            Let AI analyze this repository and explain its
-                            purpose, technologies, and project structure in
-                            beginner-friendly language.
-                          </p>
-
-                          <button
-  onClick={generateAISummary}
-  disabled={aiLoading}
-  className="mt-4 rounded-lg bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {aiLoading
-    ? "Generating AI Summary..."
-    : "Generate AI Summary"}
-</button>
-                        </>
-                      )}
-
-                      {aiSummary && (
-                        <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-                          {aiSummary}
-                        </div>
-                      )}
-
+                  {chatAnswer && (
+                    <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
+                      {chatAnswer}
                     </div>
-
-                    {/* README Analysis */}
-                    <div className="mt-4 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4">
-
-                      <div className="flex items-center gap-2">
-
-                        <span className="text-lg">
-                          📖
-                        </span>
-
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-purple-200">
-                          README Analysis
-                        </p>
-
-                      </div>
-
-                      {!readmeContent && (
-                        <>
-                          <p className="mt-3 text-sm leading-6 text-slate-300">
-                            Fetch the repository README and inspect its
-                            documentation.
-                          </p>
-
-                         <div className="mt-4 flex flex-wrap gap-3">
-                            <button
-                              onClick={fetchReadme}
-                              disabled={readmeLoading}
-                              className="rounded-lg bg-linear-to-r from-purple-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              {readmeLoading
-                                ? "Loading README..."
-                                : "Analyze README"}
-                            </button>
-                              
-
-<button
-  onClick={fetchFolders}
-  disabled={folderLoading}
-  className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {folderLoading
-    ? "Analyzing Folders..."
-    : "Explain Important Folders"}
-</button>
-
-                       
-
-                            <button
-                              onClick={fetchTechStack}
-                              disabled={techLoading}
-                              className="rounded-lg bg-linear-to-r from-orange-400 to-yellow-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              {techLoading
-                                ? "Analyzing Tech Stack..."
-                                : "Analyze Tech Stack"}
-                            </button>
-                            <button
-  onClick={fetchContributors}
-  disabled={contributorsLoading}
-  className="rounded-lg bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {contributorsLoading
-    ? "Analyzing Contributors..."
-    : "Analyze Contributors"}
-</button>
-<button
-  onClick={fetchSimilarRepos}
-  disabled={similarLoading}
-  className="rounded-lg bg-linear-to-r from-purple-400 to-pink-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
->
-  {similarLoading
-    ? "Finding Similar Repositories..."
-    : "Similar Repositories"}
-</button>
-                          </div>
-                        </>
-                      )}
-
-                      {readmeContent && (
-                        <div className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-                          {readmeContent}
-                        </div>
-                      )}
-
-                      {folderExplanation && (
-                        <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-                          {folderExplanation}
-                        </div>
-                      )}
-
-                      {techStack && (
-                        <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-                          {techStack}
-                        </div>
-                      )}
-                      {contributors && (
-  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-    {contributors}
-  </div>
-)}
-{similarRepos && (
-  <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-    {similarRepos}
-  </div>
-)}
-
-                      <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">💬</span>
-
-                          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
-                            Chat With Repository
-                          </p>
-                        </div>
-
-  <input
-    type="text"
-    value={question}
-    onChange={(e) => setQuestion(e.target.value)}
-    placeholder="Ask anything about this repository..."
-    className="mt-4 w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
-  />
-
-  <button
-    onClick={askQuestion}
-    disabled={chatLoading}
-    className="mt-3 rounded-lg bg-linear-to-r from-green-400 to-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
-  >
-    {chatLoading ? "Thinking..." : "Ask AI"}
-  </button>
-
-  {chatAnswer && (
-    <div className="mt-4 whitespace-pre-line rounded-lg border border-slate-700 bg-slate-950/70 p-4 text-sm leading-7 text-slate-200">
-      {chatAnswer}
-    </div>
-  )}
-</div>
-
-                    </div>
-                  </>
-                )}
-
+                  )}
+                </div>
               </div>
             </div>
           </div>
