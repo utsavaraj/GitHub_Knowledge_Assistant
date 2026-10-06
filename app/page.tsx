@@ -365,10 +365,10 @@ const askQuestion = async () => {
         </header>
 
         {/* Main Section */}
-        <section className="grid flex-1 items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+       <section className="flex flex-1 flex-col items-center justify-center text-center">
 
           {/* Left Side */}
-          <div className="max-w-2xl">
+        <div className="mx-auto max-w-4xl">
 
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-blue-200">
               AI-powered repo intelligence
@@ -384,14 +384,14 @@ const askQuestion = async () => {
 
             {/* Repository Input */}
             <div className="mt-8 rounded-2xl border border-white/10 bg-slate-900/80 p-3">
-              <div className="flex flex-col gap-3 sm:flex-row">
+             <div className="flex flex-col items-center gap-4">
 
                 <input
                   type="url"
                   value={repoUrl}
                   onChange={(e) => setRepoUrl(e.target.value)}
                   placeholder="https://github.com/user/repository"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
+                  className="w-full max-w-3xl rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
                 />
 
                 <button
@@ -476,53 +476,40 @@ const askQuestion = async () => {
                   </span>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">Stars</p>
-                    <p className="mt-2 text-xl font-semibold text-white">
-                      {repoData ? repoData.stargazers_count : "-"}
-                    </p>
-                  </div>
+            {/* Stats */}
+<div className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-6 rounded-xl border border-slate-800 bg-slate-900 p-4 text-center">
 
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">Forks</p>
-                    <p className="mt-2 text-xl font-semibold text-white">
-                      {repoData ? repoData.forks_count : "-"}
-                    </p>
-                  </div>
+  <span className="text-slate-200">
+    ⭐ {repoData ? repoData.stargazers_count : "-"} Stars
+  </span>
 
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">Issues</p>
-                    <p className="mt-2 text-xl font-semibold text-white">
-                      {repoData ? repoData.open_issues_count : "-"}
-                    </p>
-                  </div>
+  <span className="text-slate-200">
+    🍴 {repoData ? repoData.forks_count : "-"} Forks
+  </span>
 
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                    <p className="text-xs text-slate-400">Language</p>
-                    <p className="mt-2 wrap-break-word text-lg font-semibold text-white">
-                      {repoData?.language || "-"}
-                    </p>
-                  </div>
+  <span className="text-slate-200">
+    🐞 {repoData ? repoData.open_issues_count : "-"} Issues
+  </span>
 
-                  <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4">
-                    <p className="text-xs text-green-300">Health Score</p>
-                    <p className="mt-2 text-xl font-semibold text-white">
-                      {repoData
-                        ? Math.min(
-                            10,
-                            repoData.stargazers_count / 1000 +
-                              repoData.forks_count / 500 +
-                              5 -
-                              repoData.open_issues_count / 1000
-                          ).toFixed(1)
-                        : "-"}
-                      /10
-                    </p>
-                  </div>
-                </div>
+  <span className="text-slate-200">
+    🛠 {repoData?.language || "-"}
+  </span>
 
+  <span className="font-semibold text-green-400">
+    💚
+    {repoData
+      ? Math.min(
+          10,
+          repoData.stargazers_count / 1000 +
+            repoData.forks_count / 500 +
+            5 -
+            repoData.open_issues_count / 1000
+        ).toFixed(1)
+      : "-"}
+    /10 Health Score
+  </span>
+
+</div>
                 {/* Description */}
                 <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-3">
                   <p className="text-xs uppercase tracking-[0.2em] text-blue-200">
