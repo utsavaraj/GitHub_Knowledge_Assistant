@@ -411,9 +411,17 @@ setActiveResult(data.explanation);
 
   <div className="prose prose-invert max-w-none">
     <div className="prose prose-invert max-w-none text-slate-300">
-  <ReactMarkdown>
-   {activeResult || "Click any analysis card to see results."}
-  </ReactMarkdown>
+  <ReactMarkdown
+  components={{
+    strong: ({ children }) => (
+      <span className="text-cyan-400 font-bold">
+        {children}
+      </span>
+    ),
+  }}
+>
+  {activeResult || "Click any analysis card to see results."}
+</ReactMarkdown>
 </div>
 
 

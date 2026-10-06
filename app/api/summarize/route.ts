@@ -16,10 +16,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const prompt = `
-You are an expert software engineer.
+  const prompt = `
+You are a senior software architect and technical mentor.
 
-Analyze this GitHub repository information and explain it in simple language for a beginner.
+Analyze this GitHub repository and generate a professional markdown report for beginners.
 
 Repository Name: ${repository.full_name}
 Description: ${repository.description || "Not available"}
@@ -28,34 +28,57 @@ Stars: ${repository.stargazers_count}
 Forks: ${repository.forks_count}
 Open Issues: ${repository.open_issues_count}
 
-Give the response in these sections:
+Return the response ONLY in the following format:
 
-📦 Repository Overview
-- Explain what the project is
-- Mention the main purpose
+# 🤖 AI Summary
 
-🚀 Key Features
-- List the main features in bullet points
+## 📦 Repository Overview
+- What is this project?
+- What problem does it solve?
+- Main purpose of the repository.
 
-🛠 Tech Stack
-- Mention technologies, frameworks and languages used
+## 🚀 Key Features
+- Feature 1
+- Feature 2
+- Feature 3
+- Feature 4
 
-👥 Who Should Use It
-- Mention which type of developers or users would benefit from it
+## 🛠 Tech Stack
+- Programming Language:
+- Frameworks:
+- Libraries:
+- Tools:
 
-📚 What You Can Learn
-- Mention skills or concepts someone can learn from this repository
+## 👥 Who Should Use It?
+- Beginners
+- Students
+- Developers
+- Companies
 
-📝 Beginner Summary
-- Give a short and simple explanation in 3-5 lines
+## 📚 What Can You Learn?
+- Concept 1
+- Concept 2
+- Concept 3
+- Concept 4
+
+## 🎯 Difficulty Level
+Choose one:
+🟢 Beginner
+🟡 Intermediate
+🔴 Advanced
+
+Give a short reason.
+
+## 📝 Beginner Explanation
+Explain the repository in 4-6 simple lines that a college student can easily understand.
 
 Rules:
-- Use simple English
-- Use bullet points wherever possible
-- Avoid long paragraphs
-- Keep the response well-structured and easy to read
-
-Keep the explanation clear and concise.
+- Use proper markdown headings.
+- Use bullet points.
+- Do NOT write large paragraphs.
+- Keep sections clearly separated.
+- Make the report professional and easy to scan.
+- Maximum 300 words.
 `;
 
     const completion = await groq.chat.completions.create({
