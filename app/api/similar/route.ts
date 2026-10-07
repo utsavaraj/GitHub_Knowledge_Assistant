@@ -50,7 +50,7 @@ Keep the response beginner friendly.
   explanation: result || "No similar repositories found.",
 });
   } catch (error) {
-    console.error("Similar Repo Error:", error);
+    console.error("Similar Repo Error FULL:", error);
 
     return NextResponse.json({
       error: "Failed to fetch similar repositories.",

@@ -62,10 +62,9 @@ export default function AnalysisPage() {
       if (!response.ok) {
         throw new Error(data.error);
       }
+setTechStack(data.analysis);
 
-      setFolderExplanation(data.explanation);
-
-      setActiveResult(data.explanation);
+setActiveResult(data.analysis);
     } catch (error) {
       console.error(error);
     } finally {
@@ -98,9 +97,9 @@ export default function AnalysisPage() {
         throw new Error(data.error);
       }
 
-      setTechStack(data.explanation);
+      setTechStack(data.analysis);
 
-      setActiveResult(data.explanation);
+      setActiveResult(data.analysis);
     } catch (error) {
       console.error(error);
     } finally {
