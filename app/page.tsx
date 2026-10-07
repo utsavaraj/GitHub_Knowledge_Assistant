@@ -378,12 +378,12 @@ const askQuestion = async () => {
               GitHub Knowledge Assistant
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg text-slate-300 sm:text-xl">
+            <p className="mt-6 mx-auto max-w-xl text-center text-lg text-slate-300 sm:text-xl">
               Chat with any GitHub repository using AI
             </p>
 
             {/* Repository Input */}
-            <div className="mt-8 rounded-2xl border border-white/10 bg-slate-900/80 p-3">
+          <div className="mt-8 mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-slate-900/80 p-3">
              <div className="flex flex-col items-center gap-4">
 
                 <input
@@ -404,14 +404,15 @@ const askQuestion = async () => {
 
               </div>
             </div>
-            {repoData && (
-  <div className="mt-4">
-    <a
-      href="/analysis"
-      className="inline-flex rounded-xl bg-linear-to-r from-purple-500 to-pink-500 px-6 py-3 font-semibold text-white transition hover:opacity-90"
-    >
-      View Detailed Analysis →
-    </a>
+         {repoData && (
+  <div className="mt-6 flex justify-center">
+
+   <a
+  href="/analysis"
+  className="inline-flex items-center justify-center rounded-xl bg-linear-to-r from-purple-500 to-pink-500 px-8 py-3 font-semibold text-white transition hover:opacity-90"
+>
+  View Detailed Analysis →
+</a>
   </div>
 )}
 
@@ -423,7 +424,7 @@ const askQuestion = async () => {
             )}
 
             {/* Features */}
-            <div className="mt-8 flex flex-wrap gap-3 text-sm text-slate-300">
+         <div className="relative mt-4 flex flex-wrap justify-center gap-3 overflow-hidden rounded-4xl border border-white/10 bg-slate-900/80 p-5">
               {featureHighlights.map((item) => (
                 <span
                   key={item}
@@ -436,27 +437,17 @@ const askQuestion = async () => {
 
           </div>
 
-          {/* Right Side */}
-          <div className="relative">
-            <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-slate-900/80 p-5">
 
-              {/* Browser Dots */}
-              <div className="mb-4 flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-red-400" />
-                <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                <span className="h-3 w-3 rounded-full bg-green-400" />
-              </div>
-
-              <div className="rounded-2xl border border-slate-700 bg-slate-950/80 p-4">
+           <div className="mt-6 rounded-2xl border border-slate-700 bg-slate-950/80 p-4">
 
                 {/* Repository Header */}
-                <div className="mb-4 flex items-start justify-between gap-3">
+               <div className="flex flex-col items-center">
                   <div>
                     <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
                       Repository
                     </p>
 
-                    <h2 className="mt-2 break-all text-xl font-semibold text-white">
+                    <h2 className="mt-2 break-all text-center text-xl font-semibold text-white">
                       {repoData
                         ? repoData.full_name
                         : "Click Analyze Repository"}
@@ -492,7 +483,7 @@ const askQuestion = async () => {
   </span>
 
   <span className="text-slate-200">
-    🛠 {repoData?.language || "-"}
+    🛠 {repoData?.language || "-"} Tech Stack
   </span>
 
   <span className="font-semibold text-green-400">
@@ -512,20 +503,20 @@ const askQuestion = async () => {
 </div>
                 {/* Description */}
                 <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/5 p-3">
-                  <p className="text-xs uppercase tracking-[0.2em] text-blue-200">
+                 <p className="text-center text-xs uppercase tracking-[0.2em] text-blue-200">
                     Repository Description
                   </p>
 
-                  <p className="mt-2 text-sm leading-6 text-slate-200">
+                 <p className="mt-2 text-center text-sm leading-6 text-slate-200">
                     {repoData
                       ? repoData.description || "No repository description available."
-                      : "Enter a GitHub repository URL and click Analyze Repository"}
+                      : ""}
                   </p>
                 </div>
 
                 {/* Chat With Repository */}
                 <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                  <div className="flex items-center gap-2">
+                 <div className="flex items-center justify-center gap-2">
                     <span className="text-lg">💬</span>
 
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
@@ -538,13 +529,13 @@ const askQuestion = async () => {
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="Ask anything about this repository..."
-                    className="mt-4 w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
+                   className="mt-4 mx-auto block w-full max-w-2xl rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none"
                   />
 
                   <button
                     onClick={askQuestion}
                     disabled={chatLoading}
-                    className="mt-3 rounded-lg bg-linear-to-r from-green-400 to-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
+                   className="mt-3 mx-auto block rounded-lg bg-linear-to-r from-green-400 to-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
                   >
                     {chatLoading ? "Thinking..." : "Ask AI"}
                   </button>
@@ -556,8 +547,6 @@ const askQuestion = async () => {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
         </section>
       </div>
     </main>
